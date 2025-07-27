@@ -1,156 +1,146 @@
 <!DOCTYPE html>
-<html lang="en" >
-  <head>
-    <meta charset="UTF-8">
-    <title>CPS Test</title>
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
-   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-   <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/1.9.1/css/OverlayScrollbars.min.css'>
-    <link rel='stylesheet' href='https://kingsora.github.io/OverlayScrollbars/etc/os-theme-thin-dark.css'>	  
-    <link rel="stylesheet" href="css/style.css">
-    <script src="https://kit.fontawesome.com/7dc3015a44.js" crossorigin="anonymous"></script>
-  </head>
-  <body>
-    
-    <section class="section">
-      <div class="container">
-        <div class="columns">
-          
-          <div class="column is-9">
-            <div class="content is-medium">
-       
-              <div class="box">
-                <h4 id="10" class="title is-3"><a id="timeText"></a> Second CPS Test</h4>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CPS Test</title>
 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/1.9.1/css/OverlayScrollbars.min.css" />
+  <link rel="stylesheet" href="https://kingsora.github.io/OverlayScrollbars/etc/os-theme-thin-dark.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://kit.fontawesome.com/7dc3015a44.js" crossorigin="anonymous"></script>
+</head>
+<body>
+  <section class="section">
+    <div class="container">
+      <div class="columns">
+        <div class="column is-9">
+          <div class="content is-medium">
+            <div class="box">
+              <h4 class="title is-3"><span id="timeText"></span> Second CPS Test</h4>
 
+              <article class="message is-primary">
+                <div class="message-body">
+                  <input class="input" type="number" id="timeTxt" placeholder="Duration (seconds)" />
+                  <div>Timer: <span id="timer">0</span></div>
+                  <div>Score: <span id="score">0</span></div>
+                  <div>Clicks/s: <span id="clicks">0</span></div>
+                </div>
+              </article>
 
-                <article class="message is-primary">
-               
-                  <div class="message-body">
-                    
-                   
-                    <div id="content">
-                    <input class="input" type="number" id="timeTxt">
-                                               <script>
-var input = document.getElementById("timeTxt");
+              <div id="clickarea" class="button is-danger is-light" style="width: 500px; height: 150px;">
+                <button id="start" class="button is-danger is-light" style="width: 100%; height: 100%;">Click Here</button>
+              </div>
 
-function searchURL() {
-     window.location = "https://shufflse.github.io/cps-test/?time=" + input.value;
-}
+              <div style="margin-top: 10px;">
+                <button id="stop" class="button is-warning is-light" style="width: 500px; height: 50px;">Stop</button>
+              </div>
 
-</script>
-    Timer: <span id="timer"></span><br/>
-    Score: <span id="score"></span><br/>
-    Clicks/s: <span id="clicks"></span>
-  </div>
-                  </div>
+              <script>
+                (() => {
+                  let score = 0;
+                  let ended = true;
+                  let startTime = null;
+                  let timerId = null;
 
-                </article>
-                    <div id="clickarea" class="button is-danger is-light" style="width: 500px; height: 150px;">
-                    <button id="start" class="button is-danger is-light" style="width: 500px; height: 150px;">Click Here</button>
-                  </div>
+                  const input = document.getElementById("timeTxt");
+                  const timerTxt = document.getElementById("timer");
+                  const scoreTxt = document.getElementById("score");
+                  const clicksTxt = document.getElementById("clicks");
+                  const timeText = document.getElementById("timeText");
+                  const startBtn = document.getElementById("start");
+                  const stopBtn = document.getElementById("stop");
+                  const clickArea = document.getElementById("clickarea");
 
-                  <script type="text/javascript">
-                  setInterval(function() {  var input = document.getElementById('timeTxt'); }, 100);
-                         setInterval(function() {  document.getElementById("timeText").innerHTML = input.value; }, 100);
+                  const show = elem => elem.style.display = 'inline';
+                  const hide = elem => elem.style.display = 'none';
 
-    var score; // to store the current score
-   setInterval(function() {  console.log(input.value + " duration")}, 100);
-    var startTime; // start time
-    var ended = true; // boolean indicating if game is ended
-    // we get DOM References for some HTML elements
-    var timerTxt = document.getElementById("timer");
-    var scoreTxt = document.getElementById("score");
-    var clicksTxt = document.getElementById("clicks");
-    var startBtn = document.getElementById("start");
-    var clickArea = document.getElementById("clickarea");
-    // we define two functions for showing or hiding a HTML element
-    var show = function(elem) {
-      elem.style.display = 'inline';
-    };
-    var hide = function(elem) {
-      elem.style.display = 'none';
-    };
-    // Method called when the game starts
-    function startGame() {
-      hide(startBtn);
-      score = -1;
-      ended = false;
-      // we get start time
-      startTime = new Date().getTime();
-      // we create a timer with the setInterval method
-      var timerId = setInterval(function() {
-        var total = (new Date().getTime() - startTime) / 1000;
-        // while total lower than duration, we update timer and the clicks by seconds
-        if (total < input.value) {
-          timerTxt.textContent = total.toFixed(3);
-          clicksTxt.textContent = (score / total).toFixed(2);
-        } else {
-          // otherwise, game is ended, we clear interval and we set game as ended
-          ended = true;
-          clearInterval(timerId);
-          // we call the end game method
-          endGame();
-        }
-      }, 1);
-  }
-  // end game method
-  function endGame() {
-    // we write final stats
-    var duration =(input.value)
-    var clicsBySeconds = (score / input.value).toFixed(2);
-    timerTxt.textContent = duration;
-    clicksTxt.textContent = clicsBySeconds;
-    // we show start button to play an other game
-    show(startBtn);
-    // we display result to the user in delayed mode 
-    //to update DOM elements just before the alert
-    setTimeout(function() {
-      alert('Completed with ' + score + ' clicks in ' + input.value + 
-      ' seconds. It is ' + clicsBySeconds + 
-      ' clicks per second. Try again!');
-    }, 10);
-  }
-  // we set a click event listener on the start button
-  startBtn.addEventListener("click", function(e) {
-    startGame();
-  });
-  // we add a click event listener on the click area div to update the score when the user will click
-  clickArea.addEventListener("click", function(e) {
-    if (!ended) {
-      score++;
-      scoreTxt.textContent = score;
-    }
-  }); </script>
-            
+                  const updateTimeText = () => {
+                    timeText.textContent = input.value || "";
+                  };
+
+                  const startGame = () => {
+                    const duration = parseFloat(input.value);
+                    if (isNaN(duration) || duration <= 0) {
+                      alert("Please enter a valid duration.");
+                      return;
+                    }
+
+                    score = 0;
+                    ended = false;
+                    startTime = performance.now();
+
+                    hide(startBtn);
+                    show(stopBtn);
+
+                    timerId = setInterval(() => {
+                      const total = (performance.now() - startTime) / 1000;
+                      if (total < duration) {
+                        timerTxt.textContent = total.toFixed(3);
+                        clicksTxt.textContent = (score / total).toFixed(2);
+                      } else {
+                        clearInterval(timerId);
+                        ended = true;
+                        endGame(duration);
+                      }
+                    }, 50);
+                  };
+
+                  const endGame = (duration) => {
+                    const actualDuration = ended ? duration : (performance.now() - startTime) / 1000;
+                    const cps = (score / actualDuration).toFixed(2);
+                    timerTxt.textContent = actualDuration.toFixed(3);
+                    clicksTxt.textContent = cps;
+                    scoreTxt.textContent = score;
+
+                    show(startBtn);
+                    hide(stopBtn);
+
+                    setTimeout(() => {
+                      alert(`Completed with ${score} clicks in ${actualDuration.toFixed(2)} seconds.\nThat's ${cps} clicks per second.`);
+                    }, 100);
+                  };
+
+                  const stopGame = () => {
+                    if (!ended) {
+                      clearInterval(timerId);
+                      ended = true;
+                      const elapsed = (performance.now() - startTime) / 1000;
+                      endGame(elapsed);
+                    }
+                  };
+
+                  input.addEventListener("input", updateTimeText);
+                  startBtn.addEventListener("click", startGame);
+                  stopBtn.addEventListener("click", stopGame);
+                  clickArea.addEventListener("click", () => {
+                    if (!ended) {
+                      score++;
+                      scoreTxt.textContent = score;
+                    }
+                  });
+
+                  window.addEventListener("resize", () => {
+                    const divs = document.querySelectorAll(".menu-list");
+                    divs.forEach(div => div.classList.toggle("tags", window.innerWidth < 768));
+                  });
+
+                  document.addEventListener("DOMContentLoaded", () => {
+                    OverlayScrollbars(document.querySelectorAll("body"), {});
+                    hide(stopBtn);
+                    updateTimeText();
+                  });
+                })();
+              </script>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</div>
-</section>
+  </section>
 
-<script src='https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/prism.js'></script>
-<script src='https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/1.9.1/js/OverlayScrollbars.min.js'></script>  
-    
-<script>
-  window.addEventListener('resize', () => {
-  const divs = document.querySelectorAll(".menu-list");
-  if (window.innerWidth < 768){
-    divs.forEach(div => div.classList.add("tags"));
-  }
-  else {
-    divs.forEach(div => div.classList.remove("tags"));
-  }
-});
-  
-  document.addEventListener("DOMContentLoaded", function() {
-	//The first argument are the elements to which the plugin shall be initialized
-	//The second argument has to be at least a empty object or a object with your desired options
-	OverlayScrollbars(document.querySelectorAll("body"), { });
-});
-  
-</script>  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/prism.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/1.9.1/js/OverlayScrollbars.min.js"></script>
 </body>
 </html>
