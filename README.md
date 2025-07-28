@@ -6,3 +6,8 @@
 # 2025 Update
 - Full Rewrite
 - Added Stop Button
+
+# Potential Updates
+- Dark  Mode
+- Fully Custom CSS
+  
