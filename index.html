@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>CPS Test</title>
-
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/1.9.1/css/OverlayScrollbars.min.css" />
   <link rel="stylesheet" href="https://kingsora.github.io/OverlayScrollbars/etc/os-theme-thin-dark.css" />
@@ -94,8 +93,11 @@
                     clicksTxt.textContent = cps;
                     scoreTxt.textContent = score;
 
-                    show(startBtn);
                     hide(stopBtn);
+
+                    setTimeout(() => {
+                      show(startBtn);
+                    }, 1000); 
 
                     setTimeout(() => {
                       alert(`Completed with ${score} clicks in ${actualDuration.toFixed(2)} seconds.\nThat's ${cps} clicks per second.`);
