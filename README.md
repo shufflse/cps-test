@@ -3,11 +3,11 @@
 - Can be used in other sites (must have obvious credit direct to this repository)
 
 
-# 2025 Update
-- Full Rewrite
-- Added Stop Button
+# August 2025 Update
+- Dark Mode
+- Fully Custom CSS
 
 # Potential Updates
-- Dark  Mode
-- Fully Custom CSS
+- Dark Mode Persistence
+- Top Score (With Persistence)
   
