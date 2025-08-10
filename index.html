@@ -3,146 +3,175 @@
 <head>
   <meta charset="UTF-8">
   <title>CPS Test</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/1.9.1/css/OverlayScrollbars.min.css" />
-  <link rel="stylesheet" href="https://kingsora.github.io/OverlayScrollbars/etc/os-theme-thin-dark.css" />
   <link rel="stylesheet" href="css/style.css" />
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://kit.fontawesome.com/7dc3015a44.js" crossorigin="anonymous"></script>
 </head>
 <body>
   <section class="section">
-    <div class="container">
-      <div class="columns">
-        <div class="column is-9">
-          <div class="content is-medium">
-            <div class="box">
-              <h4 class="title is-3"><span id="timeText"></span> Second CPS Test</h4>
+    <div class="card">
 
-              <article class="message is-primary">
-                <div class="message-body">
-                  <input class="input" type="number" id="timeTxt" placeholder="Duration (seconds)" />
-                  <div>Timer: <span id="timer">0</span></div>
-                  <div>Score: <span id="score">0</span></div>
-                  <div>Clicks/s: <span id="clicks">0</span></div>
-                </div>
-              </article>
+      <div class="card-header">
+        <h4 class="title"><span id="timeText"></span> Second CPS Test</h4>
+        <button id="themeToggle" class="theme-btn" aria-label="Toggle theme">
+          <span id="themeIcon">🌙</span>
+        </button>
+      </div>
 
-              <div id="clickarea" class="button is-danger is-light" style="width: 500px; height: 150px;">
-                <button id="start" class="button is-danger is-light" style="width: 100%; height: 100%;">Click Here</button>
-              </div>
-
-              <div style="margin-top: 10px;">
-                <button id="stop" class="button is-warning is-light" style="width: 500px; height: 50px;">Stop</button>
-              </div>
-
-              <script>
-                (() => {
-                  let score = 0;
-                  let ended = true;
-                  let startTime = null;
-                  let timerId = null;
-
-                  const input = document.getElementById("timeTxt");
-                  const timerTxt = document.getElementById("timer");
-                  const scoreTxt = document.getElementById("score");
-                  const clicksTxt = document.getElementById("clicks");
-                  const timeText = document.getElementById("timeText");
-                  const startBtn = document.getElementById("start");
-                  const stopBtn = document.getElementById("stop");
-                  const clickArea = document.getElementById("clickarea");
-
-                  const show = elem => elem.style.display = 'inline';
-                  const hide = elem => elem.style.display = 'none';
-
-                  const updateTimeText = () => {
-                    timeText.textContent = input.value || "";
-                  };
-
-                  const startGame = () => {
-                    const duration = parseFloat(input.value);
-                    if (isNaN(duration) || duration <= 0) {
-                      alert("Please enter a valid duration.");
-                      return;
-                    }
-
-                    score = 0;
-                    ended = false;
-                    startTime = performance.now();
-
-                    hide(startBtn);
-                    show(stopBtn);
-
-                    timerId = setInterval(() => {
-                      const total = (performance.now() - startTime) / 1000;
-                      if (total < duration) {
-                        timerTxt.textContent = total.toFixed(3);
-                        clicksTxt.textContent = (score / total).toFixed(2);
-                      } else {
-                        clearInterval(timerId);
-                        ended = true;
-                        endGame(duration);
-                      }
-                    }, 50);
-                  };
-
-                  const endGame = (duration) => {
-                    const actualDuration = ended ? duration : (performance.now() - startTime) / 1000;
-                    const cps = (score / actualDuration).toFixed(2);
-                    timerTxt.textContent = actualDuration.toFixed(3);
-                    clicksTxt.textContent = cps;
-                    scoreTxt.textContent = score;
-
-                    hide(stopBtn);
-
-                    setTimeout(() => {
-                      show(startBtn);
-                    }, 1000); 
-
-                    setTimeout(() => {
-                      alert(`Completed with ${score} clicks in ${actualDuration.toFixed(2)} seconds.\nThat's ${cps} clicks per second.`);
-                    }, 100);
-                  };
-
-                  const stopGame = () => {
-                    if (!ended) {
-                      clearInterval(timerId);
-                      ended = true;
-                      const elapsed = (performance.now() - startTime) / 1000;
-                      endGame(elapsed);
-                    }
-                  };
-
-                  input.addEventListener("input", updateTimeText);
-                  startBtn.addEventListener("click", startGame);
-                  stopBtn.addEventListener("click", stopGame);
-                  clickArea.addEventListener("click", () => {
-                    if (!ended) {
-                      score++;
-                      scoreTxt.textContent = score;
-                    }
-                  });
-
-                  window.addEventListener("resize", () => {
-                    const divs = document.querySelectorAll(".menu-list");
-                    divs.forEach(div => div.classList.toggle("tags", window.innerWidth < 768));
-                  });
-
-                  document.addEventListener("DOMContentLoaded", () => {
-                    OverlayScrollbars(document.querySelectorAll("body"), {});
-                    hide(stopBtn);
-                    updateTimeText();
-                  });
-                })();
-              </script>
-            </div>
-          </div>
+      <div class="message">
+        <input class="input" type="number" id="timeTxt" placeholder="Duration (seconds)" />
+        <div class="stats">
+          Timer: <span id="timer">0</span><br>
+          Score: <span id="score">0</span><br>
+          Clicks/s: <span id="clicks">0</span>
         </div>
       </div>
+
+      <div id="clickarea" role="button" tabindex="0" title="Click here to start and play">
+        <span id="clickLabel">Click Here</span>
+      </div>
+
+      <div style="margin-top: 0.75rem;">
+        <button id="stop" class="button is-warning" style="height: 50px;">Stop</button>
+      </div>
+      
     </div>
   </section>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/prism.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/1.9.1/js/OverlayScrollbars.min.js"></script>
+
+  <script>
+    (function () {
+      let score = 0;
+      let started = false;
+      let startTime = 0;
+      let timerId = null;
+
+      const input = document.getElementById("timeTxt");
+      const timerTxt = document.getElementById("timer");
+      const scoreTxt = document.getElementById("score");
+      const clicksTxt = document.getElementById("clicks");
+      const timeText = document.getElementById("timeText");
+      const stopBtn = document.getElementById("stop");
+      const clickArea = document.getElementById("clickarea");
+      const clickLabel = document.getElementById("clickLabel");
+
+      const themeToggle = document.getElementById("themeToggle");
+      const themeIcon = document.getElementById("themeIcon");
+
+      const show = elem => { if (elem) elem.style.display = 'inline-block'; };
+      const hide = elem => { if (elem) elem.style.display = 'none'; };
+
+      const updateTimeText = () => {
+        timeText.textContent = input.value || "";
+      };
+
+      const startGame = () => {
+        const duration = parseFloat(input.value);
+        if (isNaN(duration) || duration <= 0) {
+          alert("Please enter a valid duration.");
+          return false;
+        }
+
+        score = 0;
+        started = true;
+        startTime = performance.now();
+
+        show(stopBtn);
+        clickArea.classList.add('active');
+        clickLabel.textContent = "Clicks: 0";
+
+        timerTxt.textContent = '0.000';
+        scoreTxt.textContent = '0';
+        clicksTxt.textContent = '0.00';
+
+        timerId = setInterval(() => {
+          const elapsed = (performance.now() - startTime) / 1000;
+          if (elapsed < duration) {
+            timerTxt.textContent = elapsed.toFixed(3);
+            const cps = elapsed > 0 ? (score / elapsed) : 0;
+            clicksTxt.textContent = cps.toFixed(2);
+          } else {
+            clearInterval(timerId);
+            started = false;
+            endGame(duration);
+          }
+        }, 50);
+
+        return true;
+      };
+
+      const endGame = (actualDuration) => {
+
+        if (typeof actualDuration !== 'number') {
+          actualDuration = (performance.now() - startTime) / 1000;
+        }
+        const cps = actualDuration > 0 ? (score / actualDuration) : 0;
+
+        timerTxt.textContent = actualDuration.toFixed(3);
+        clicksTxt.textContent = cps.toFixed(2);
+        scoreTxt.textContent = score;
+
+        hide(stopBtn);
+        clickArea.classList.remove('active');
+        clickLabel.textContent = 'Click Here';
+
+        setTimeout(() => {
+          alert(
+            `Completed with ${score} clicks in ${actualDuration.toFixed(2)} seconds.\n` +
+            `That's ${cps.toFixed(2)} clicks per second.`
+          );
+        }, 80);
+      };
+
+      const stopGame = () => {
+        if (!started) return;
+        clearInterval(timerId);
+        started = false;
+        const elapsed = (performance.now() - startTime) / 1000;
+        endGame(elapsed);
+      };
+
+      clickArea.addEventListener("click", (e) => {
+
+        if (!started) {
+          const ok = startGame();
+          if (!ok) return; 
+
+          score++;
+          scoreTxt.textContent = score;
+          const elapsed = (performance.now() - startTime) / 1000;
+          clicksTxt.textContent = ((score) / (elapsed || 1)).toFixed(2);
+          clickLabel.textContent = `Clicks: ${score}`;
+          return;
+        }
+
+        score++;
+        scoreTxt.textContent = score;
+        clickLabel.textContent = `Clicks: ${score}`;
+      });
+
+      stopBtn.addEventListener("click", stopGame);
+
+      document.addEventListener("DOMContentLoaded", () => {
+        OverlayScrollbars(document.querySelectorAll("body"), {});
+        hide(stopBtn);
+        updateTimeText();
+
+        themeIcon.textContent = document.body.classList.contains('dark-theme') ? '☀️' : '🌙';
+      });
+
+      themeToggle.addEventListener("click", () => {
+        document.body.classList.toggle("dark-theme");
+        themeIcon.textContent = document.body.classList.contains('dark-theme') ? '☀️' : '🌙';
+      });
+
+      input.addEventListener("input", updateTimeText);
+    })();
+  </script>
 </body>
 </html>
