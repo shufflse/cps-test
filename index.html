@@ -30,7 +30,7 @@
         </div>
       </div>
 
-      <div id="clickarea" role="button" tabindex="0" title="Click here to start and play">
+      <div id="clickarea" role="button" tabindex="0">
         <span id="clickLabel">Click Here</span>
       </div>
 
@@ -50,6 +50,8 @@
       let started = false;
       let startTime = 0;
       let timerId = null;
+      let gameEnded = false;
+      let lockClicks = false;
 
       const input = document.getElementById("timeTxt");
       const timerTxt = document.getElementById("timer");
@@ -76,6 +78,11 @@
           alert("Please enter a valid duration.");
           return false;
         }
+
+        gameEnded = false;
+        lockClicks = false;
+        clickArea.style.pointerEvents = 'auto';
+        clickArea.classList.remove('disabled');
 
         score = 0;
         started = true;
@@ -106,7 +113,6 @@
       };
 
       const endGame = (actualDuration) => {
-
         if (typeof actualDuration !== 'number') {
           actualDuration = (performance.now() - startTime) / 1000;
         }
@@ -120,11 +126,19 @@
         clickArea.classList.remove('active');
         clickLabel.textContent = 'Click Here';
 
+        lockClicks = true;
+        clickArea.style.pointerEvents = 'none';
+        clickArea.classList.add('disabled');
+
         setTimeout(() => {
           alert(
             `Completed with ${score} clicks in ${actualDuration.toFixed(2)} seconds.\n` +
             `That's ${cps.toFixed(2)} clicks per second.`
           );
+          lockClicks = false;
+          gameEnded = false;
+          clickArea.style.pointerEvents = 'auto';
+          clickArea.classList.remove('disabled');
         }, 80);
       };
 
@@ -137,10 +151,10 @@
       };
 
       clickArea.addEventListener("click", (e) => {
-
-        if (!started) {
+        if (lockClicks) return;
+        if (gameEnded || !started) {
           const ok = startGame();
-          if (!ok) return; 
+          if (!ok) return;
 
           score++;
           scoreTxt.textContent = score;
