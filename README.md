@@ -7,6 +7,9 @@
 - Dark Mode
 - Fully Custom CSS
 
+# Bugs I'm Aware Of
+- Can accidentally click causing click count to reset at end of round
+
 # Potential Updates
 - Dark Mode Persistence
 - Top Score (With Persistence)
